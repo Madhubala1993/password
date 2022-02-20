@@ -1,38 +1,79 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.routes {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   display: flex;
   flex-direction: column;
+  width: max-content;
+  text-align: center;
   align-items: center;
+  gap: 2rem;
+}
+.routes :hover {
+  cursor: pointer;
+}
+body {
+  background-color: rgb(236, 236, 227);
+}
+.container {
+  align-items: center;
+  text-align: center;
+  display: flex;
+  margin-top: 10rem;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.login-container {
+  padding: 40px;
+  width: 400px;
+  height: 400px;
+  background-color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: small;
+  gap: 2rem;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.textfield {
+  width: 100%;
+}
+.forgot :hover {
+  cursor: pointer;
+}
+.signup-container {
+  padding: 40px;
+  width: 400px;
+  height: 600px;
+  background-color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: small;
+  gap: 2rem;
+}
+.passwordChange-container {
+  padding: 40px;
+  width: 400px;
+  height: 300px;
+  background-color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: small;
+  gap: 2rem;
+}
+.forgotpassword-container {
+  padding: 40px;
+  width: 400px;
+  height: fit-content;
+  background-color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: small;
+  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.error-message {
+  color: red;
 }
