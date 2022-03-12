@@ -1,9 +1,6 @@
 import "./App.css";
 import { Switch, Route, useHistory } from "react-router-dom";
 import Button from "@mui/material/Button";
-
-import FormHelperText from "@mui/material/FormHelperText";
-import FormControl from "@mui/material/FormControl";
 import { Login } from "./Login";
 import { Signup } from "./Signup";
 import { ForgotPassword } from "./ForgotPassword";
@@ -31,14 +28,24 @@ function Routers() {
           <Route path="/login">
             <Login />
           </Route>
+          <Route path="/success">
+            <LoginSuccess />
+          </Route>
+          <Route path="/signSuccess">
+            <SignUpSuccess />
+          </Route>
+          <Route path="/resetSuccess">
+            <ResetSuccess />
+          </Route>
           <Route path="/signup">
             <Signup />
           </Route>
+
           <Route path="/forgot-password">
-            <ForgotPassword auth={auth} setAuth={setAuth} />
+            <ForgotPassword />
           </Route>
           <Route path="/forgotPassword/:username">
-            <OTP auth={auth} setAuth={setAuth} />
+            <OTP />
           </Route>
           <Route path="/passwordchange">
             <PasswordChange />
@@ -67,6 +74,50 @@ function Home() {
         variant="outlined"
       >
         ForgotPassword
+      </Button>
+    </div>
+  );
+}
+
+function LoginSuccess() {
+  const history = useHistory();
+
+  return (
+    <div>
+      <h1 className="success">Login success</h1>
+      <Button variant="outlined" onClick={() => history.push("/")}>
+        Back to Home
+      </Button>
+    </div>
+  );
+}
+function SignUpSuccess() {
+  const history = useHistory();
+
+  return (
+    <div>
+      <h1 className="success">Registered successfully</h1>
+      <Button variant="outlined" onClick={() => history.push("/")}>
+        Back to Home
+      </Button>
+    </div>
+  );
+}
+
+function ResetSuccess() {
+  const history = useHistory();
+
+  return (
+    <div>
+      <h1 className="success">Password changed successfully</h1>
+      <Button variant="outlined" onClick={() => history.push("/login")}>
+        Click to Login
+      </Button>
+      <br />
+      <br />
+      <br />
+      <Button variant="outlined" onClick={() => history.push("/")}>
+        Back to Home
       </Button>
     </div>
   );

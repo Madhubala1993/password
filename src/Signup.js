@@ -4,15 +4,24 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { API } from "./global.js";
 
 const formValidationSchema = yup.object({
   username: yup.string().required("Required"),
-  mailid: yup.string().required("Required"),
-  password: yup.string().required("Required"),
+  mailid: yup
+    .string()
+
+    .required("Required"),
+  password: yup
+    .string()
+    .min(8, "Password should be minimum of 8 characters")
+    .required("Required"),
 });
 
 export function Signup() {
   const [auth, setAuth] = useState(" ");
+  console.log(auth);
   const history = useHistory();
 
   const { handleBlur, handleChange, handleSubmit, values, errors, touched } =
@@ -21,6 +30,7 @@ export function Signup() {
         username: "",
         mailid: "",
         password: "",
+        confirmPwd: "",
       },
       validationSchema: formValidationSchema,
       onSubmit: (signupDatas) => {
@@ -28,28 +38,25 @@ export function Signup() {
       },
     });
   const addSignup = (signupDatas) => {
-    fetch(`http://localhost:9000/users/signup`, {
+    fetch(`${API}/users/signup`, {
       method: "POST",
       body: JSON.stringify(signupDatas),
       headers: { "Content-Type": "application/json" },
     })
       .then((data) => data.json())
       .then((data) =>
-        data.message === "User already exists"
-          ? setAuth("error")
-          : history.push("/")
+        data.message === "Registered successfully"
+          ? history.push("/signSuccess")
+          : setAuth(data.message)
       );
   };
+  const [showPwd, setShowPwd] = useState(false);
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="signup-container">
         <div className="details">
-          {auth === " " ? (
-            " "
-          ) : (
-            <p className="error-message">User already exist. Click on Login</p>
-          )}
+          {auth === " " ? " " : <p className="error-message">{auth}</p>}
           <p>Username</p>
           <TextField
             className="textfield"
@@ -79,37 +86,88 @@ export function Signup() {
           />
           {touched.mailid && errors.mailid ? errors.mailid : ""}
           <p>Password</p>
-          <TextField
-            className="textfield"
-            id="password"
-            name="password"
-            label="Enter Password"
-            variant="outlined"
-            type="password"
-            onBlur={handleBlur}
-            value={values.password}
-            onChange={handleChange}
-            error={touched.description && errors.description}
-            helperText={touched.description && errors.description}
-          />
-          {touched.password && errors.password ? errors.password : ""}
+          {showPwd ? (
+            <div className="password-container">
+              <TextField
+                className="textfield"
+                id="password"
+                name="password"
+                label="Enter Password"
+                variant="outlined"
+                onBlur={handleBlur}
+                value={values.password}
+                onChange={handleChange}
+                error={touched.description && errors.description}
+                helperText={touched.description && errors.description}
+              />
+              {touched.password && errors.password ? errors.password : ""}
+              <Button variant="outlined" onClick={() => setShowPwd(false)}>
+                <VisibilityOff />
+              </Button>
+            </div>
+          ) : (
+            <div className="password-container">
+              <TextField
+                className="textfield"
+                id="password"
+                name="password"
+                label="Enter Password"
+                variant="outlined"
+                type="password"
+                onBlur={handleBlur}
+                value={values.password}
+                onChange={handleChange}
+                error={touched.description && errors.description}
+                helperText={touched.description && errors.description}
+              />
+              {touched.password && errors.password ? errors.password : ""}
+              <Button variant="outlined" onClick={() => setShowPwd(true)}>
+                <Visibility />
+              </Button>
+            </div>
+          )}
+
           <p>Confirm Password</p>
-          <TextField
-            className="textfield"
-            id="confirmpassword"
-            name="confirmpassword"
-            label="Confirm password"
-            variant="outlined"
-            type="confirmpassword"
-            onBlur={handleBlur}
-            value={values.confirmpassword}
-            onChange={handleChange}
-            error={touched.confirmpassword && errors.confirmpassword}
-            helperText={touched.confirmpassword && errors.confirmpassword}
-          />
-          {touched.confirmpassword && errors.confirmpassword
-            ? errors.confirmpassword
-            : ""}
+          {showPwd ? (
+            <div className="password-container">
+              <TextField
+                className="textfield"
+                id="confirmPwd"
+                name="confirmPwd"
+                label="Confirm password"
+                variant="outlined"
+                onBlur={handleBlur}
+                value={values.confirmPwd}
+                onChange={handleChange}
+                error={touched.confirmPwd && errors.confirmPwd}
+                helperText={touched.confirmPwd && errors.confirmPwd}
+              />
+              {touched.confirmPwd && errors.confirmPwd ? errors.confirmPwd : ""}
+              <Button variant="outlined" onClick={() => setShowPwd(false)}>
+                <VisibilityOff />
+              </Button>
+            </div>
+          ) : (
+            <div className="password-container">
+              <TextField
+                className="textfield"
+                id="confirmPwd"
+                name="confirmPwd"
+                label="Confirm password"
+                variant="outlined"
+                type="password"
+                onBlur={handleBlur}
+                value={values.confirmPwd}
+                onChange={handleChange}
+                error={touched.confirmPwd && errors.confirmPwd}
+                helperText={touched.confirmPwd && errors.confirmPwd}
+              />
+              {touched.confirmPwd && errors.confirmPwd ? errors.confirmPwd : ""}
+              <Button variant="outlined" onClick={() => setShowPwd(true)}>
+                <Visibility />
+              </Button>
+            </div>
+          )}
         </div>
         <br />
         <br />

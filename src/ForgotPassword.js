@@ -4,12 +4,14 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import * as yup from "yup";
+import { API } from "./global";
 
 const formValidationSchema = yup.object({
   username: yup.string().required("Required"),
 });
 
-export function ForgotPassword({ auth, setAuth }) {
+export function ForgotPassword() {
+  const [auth, setAuth] = useState(" ");
   const history = useHistory();
   const { handleBlur, handleChange, handleSubmit, values, errors, touched } =
     useFormik({
@@ -22,29 +24,23 @@ export function ForgotPassword({ auth, setAuth }) {
       },
     });
   const forgotpwd = (userdata) => {
-    // console.log(userdata);
-    fetch(`http://localhost:9000/users/forgotPassword`, {
+    fetch(`${API}/users/forgotPassword`, {
       method: "POST",
       body: JSON.stringify(userdata),
       headers: { "Content-Type": "application/json" },
     })
       .then((data) => data.json())
       .then((data) =>
-        data.message === "User doesnot exists"
-          ? setAuth("error")
-          : history.push(`/forgotPassword/${userdata.username}`)
+        data.message === "OTP sent to your e-mail"
+          ? history.push(`/forgotPassword/${userdata.username}`)
+          : setAuth(data.message)
       );
   };
   return (
     <div className="forgotpassword-container">
       <form onSubmit={handleSubmit}>
         <div className="details">
-          {auth === "error" ? (
-            <p className="error-message">Invalid user</p>
-          ) : (
-            " "
-          )}
-
+          {auth === " " ? " " : <p className="error-message">{auth}</p>}
           <p>Username</p>
           <TextField
             className="textfield"

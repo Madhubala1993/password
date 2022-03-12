@@ -6,13 +6,18 @@ import {
   useParams,
 } from "react-router-dom/cjs/react-router-dom.min";
 import * as yup from "yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
+import { API } from "./global";
 
 const formValidationSchema = yup.object({
   otp: yup.number().required("Required"),
   new_pwd: yup.string().required("Required"),
 });
 
-export function OTP({ auth, setAuth }) {
+export function OTP() {
+  const [auth, setAuth] = useState(" ");
+  console.log(auth);
   const { username } = useParams();
   console.log(username);
   const history = useHistory();
@@ -29,28 +34,23 @@ export function OTP({ auth, setAuth }) {
     });
   const otpPwd = (data) => {
     console.log(data);
-    fetch(`http://localhost:9000/users/forgotPassword/${username}`, {
+    fetch(`${API}/users/forgotPassword/${username}`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: { "Content-Type": "application/json" },
     })
       .then((data) => data.json())
       .then((data) =>
-        // console.log(data)
-        data.message === "Otp doesnot match"
-          ? setAuth("otpError")
-          : history.push(`/login`)
+        data.message === "password Updated"
+          ? history.push(`/resetSuccess`)
+          : setAuth(data.message)
       );
   };
-
+  const [showPwd, setShowPwd] = useState(false);
   return (
     <div className="forgotpassword-container">
       <form onSubmit={handleSubmit}>
-        {auth === "otpError" ? (
-          <p className="error-message">OTP doesnot match</p>
-        ) : (
-          " "
-        )}
+        {auth === " " ? " " : <p className="error-message">{auth}</p>}
         <div className="details">
           <p>Password reset link is send to your mail id</p>
           <div className="details">
@@ -73,20 +73,46 @@ export function OTP({ auth, setAuth }) {
           <br />
 
           <p>Password</p>
-          <TextField
-            className="textfield"
-            id="new_pwd"
-            name="new_pwd"
-            label="Enter Password"
-            variant="outlined"
-            type="password"
-            onBlur={handleBlur}
-            value={values.new_pwd}
-            onChange={handleChange}
-            error={touched.new_pwd && errors.new_pwd}
-            helperText={touched.new_pwd && errors.new_pwd}
-          />
-          {touched.new_pwd && errors.new_pwd ? errors.new_pwd : ""}
+          {showPwd ? (
+            <div className="password-container">
+              <TextField
+                className="textfield"
+                id="new_pwd"
+                name="new_pwd"
+                label="Enter Password"
+                variant="outlined"
+                onBlur={handleBlur}
+                value={values.new_pwd}
+                onChange={handleChange}
+                error={touched.new_pwd && errors.new_pwd}
+                helperText={touched.new_pwd && errors.new_pwd}
+              />
+              {touched.new_pwd && errors.new_pwd ? errors.new_pwd : ""}
+              <Button variant="outlined" onClick={() => setShowPwd(false)}>
+                <VisibilityOff />
+              </Button>
+            </div>
+          ) : (
+            <div className="password-container">
+              <TextField
+                className="textfield"
+                id="new_pwd"
+                name="new_pwd"
+                label="Enter Password"
+                variant="outlined"
+                type="password"
+                onBlur={handleBlur}
+                value={values.new_pwd}
+                onChange={handleChange}
+                error={touched.new_pwd && errors.new_pwd}
+                helperText={touched.new_pwd && errors.new_pwd}
+              />
+              {touched.new_pwd && errors.new_pwd ? errors.new_pwd : ""}
+              <Button variant="outlined" onClick={() => setShowPwd(true)}>
+                <Visibility />
+              </Button>
+            </div>
+          )}
         </div>
         <br />
         <br />

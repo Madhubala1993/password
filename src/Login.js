@@ -4,6 +4,8 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { API } from "./global.js";
 
 const formValidationSchema = yup.object({
   username: yup.string().required("Required"),
@@ -27,7 +29,7 @@ export function Login() {
     });
 
   const addLogin = (loginDatas) => {
-    fetch(`http://localhost:9000/users/login`, {
+    fetch(`${API}/users/login`, {
       method: "POST",
       body: JSON.stringify(loginDatas),
       headers: { "Content-Type": "application/json" },
@@ -36,10 +38,10 @@ export function Login() {
       .then((data) =>
         data.message === "Invalid credentials"
           ? setAuth("error")
-          : history.push("/")
+          : history.push("/success")
       );
   };
-
+  const [showPwd, setShowPwd] = useState(false);
   return (
     <form onSubmit={handleSubmit}>
       <div className="login-container">
@@ -50,6 +52,7 @@ export function Login() {
             <p className="error-message">Invalid credentials</p>
           )}
           <p>Username</p>
+
           <TextField
             className="textfield"
             id="username"
@@ -66,20 +69,47 @@ export function Login() {
           {touched.username && errors.username ? errors.username : ""}
 
           <p>Password</p>
-          <TextField
-            className="textfield"
-            id="password"
-            name="password"
-            label="Enter Password"
-            variant="outlined"
-            type="password"
-            onBlur={handleBlur}
-            value={values.password}
-            onChange={handleChange}
-            error={touched.description && errors.description}
-            helperText={touched.description && errors.description}
-          />
-          {touched.password && errors.password ? errors.password : ""}
+          {showPwd ? (
+            <div className="password-container">
+              <TextField
+                className="textfield"
+                id="password"
+                name="password"
+                label="Enter Password"
+                variant="outlined"
+                onBlur={handleBlur}
+                value={values.password}
+                onChange={handleChange}
+                error={touched.description && errors.description}
+                helperText={touched.description && errors.description}
+              />
+              {touched.password && errors.password ? errors.password : ""}
+              <Button variant="outlined" onClick={() => setShowPwd(false)}>
+                <VisibilityOff />
+              </Button>
+            </div>
+          ) : (
+            <div className="password-container">
+              <TextField
+                className="textfield"
+                id="password"
+                name="password"
+                label="Enter Password"
+                variant="outlined"
+                type="password"
+                onBlur={handleBlur}
+                value={values.password}
+                onChange={handleChange}
+                error={touched.description && errors.description}
+                helperText={touched.description && errors.description}
+              />
+              {touched.password && errors.password ? errors.password : ""}
+              <Button variant="outlined" onClick={() => setShowPwd(true)}>
+                <Visibility />
+              </Button>
+            </div>
+          )}
+
           <p
             className="forgot"
             onClick={() => history.push("/forgot-password")}
